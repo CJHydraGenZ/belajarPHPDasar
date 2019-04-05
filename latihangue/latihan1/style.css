@@ -1,0 +1,19 @@
+body {
+    text-align: center;
+}
+
+form {
+    max-width: 800px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    /* background-color: aqua; */
+}
+
+form ul li {
+    list-style: none;
+    display: grid;
+    grid-template-columns: auto 400px;
+
+
+}

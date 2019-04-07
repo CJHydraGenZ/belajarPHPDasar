@@ -9,7 +9,31 @@ if (!isset($_SESSION["login"])) {
 
 require 'funtions.php';
 
-$mahasiswa = query("SELECT * FROM mahasiswa");
+// pegination
+// kofigurasi
+$jumlahdataperhalaman = 3;
+$jumlahdata = count(query("SELECT * FROM mahasiswa"));
+$jumlahHalaman = ceil($jumlahdata / $jumlahdataperhalaman);
+
+$halamanAktip = (isset($_GET["halaman"])) ? $_GET["halaman"] : 1;
+
+$awaldata = ($jumlahdataperhalaman * $halamanAktip) - $jumlahdataperhalaman;
+
+
+
+
+// if (isset($_GET["halaman"])) {
+//     $halamanAktip = $_GET["halaman"];
+// } else {
+//     $halamanAktip  = 1;
+// }
+
+
+// $result = mysqli_query($conn, "SELECT * FROM mahasiswa");
+// $jumlahdata = mysqli_num_rows($result);
+// var_dump($jumlahdata);
+
+$mahasiswa = query("SELECT * FROM mahasiswa LIMIT $awaldata,$jumlahdataperhalaman");
 
 //tombol cari di tekan
 if (isset($_POST["cari"])) {
@@ -39,6 +63,28 @@ if (isset($_POST["cari"])) {
         <input type="text" name="keyword" size="40" autofocus placeholder="masukan keyword pencarian" autocomplete="off">
         <button type="submit" name="cari">Cari!</button>
     </form>
+    <!-- navigasi -->
+
+    <?php if ($halamanAktip > 1) : ?>
+
+        <a href="?halaman=<?= $halamanAktip - 1;   ?>  ">&laquo;</a>
+    <?php endif ?>
+
+
+    <?php for ($i = 1; $i <= $jumlahHalaman; $i++) :  ?>
+        <?php if ($i == $halamanAktip) : ?>
+            <a href="?halaman=<?= $i;   ?>  " style="font-weight: bold; color:red;"><?= $i;   ?> </a>
+        <?php else : ?>
+            <a href="?halaman=<?= $i;   ?>  "><?= $i;   ?> </a>
+        <?php endif; ?>
+
+    <?php endfor ?>
+
+    <?php if ($halamanAktip < $jumlahHalaman) : ?>
+
+        <a href="?halaman=<?= $halamanAktip + 1;   ?>  ">&raquo;</a>
+    <?php endif ?>
+
     <br>
     <table border="1" cellpadding="10" cellspacing="0">
         <tr>
@@ -58,7 +104,7 @@ if (isset($_POST["cari"])) {
                 <td><?= $i;   ?> </td>
                 <td>
                     <a href="ubah.php?id=<?= $row["id"]; ?>">ubah</a> |
-                    <a href="hapus.php?id=<?= $row["id"]; ?>" onclick="return confirm('yakin?')" ;>hapus</a>
+                    <a href="hapus.php?id=<?= $row["id"]; ?>" onclick="return confirm(' yakin ?')" ;>hapus</a>
                 </td>
 
                 <td><img src="img/<?= $row["gambar"]; ?>" width="50"></td>
